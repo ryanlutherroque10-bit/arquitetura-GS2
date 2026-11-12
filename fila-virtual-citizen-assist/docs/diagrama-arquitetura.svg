@@ -1,0 +1,144 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 700" font-family="Segoe UI, DejaVu Sans, Arial, sans-serif" font-size="13">
+  <title>Diagrama de arquitetura — Citizen Assist AI, fila virtual</title>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#33413c"/>
+    </marker>
+    <marker id="arrowGray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#8a9893"/>
+    </marker>
+  </defs>
+  <rect width="1100" height="700" fill="#ffffff"/>
+  <text x="30" y="36" font-size="20" font-weight="700" fill="#17342d">Citizen Assist AI — Sistema inteligente de filas virtuais</text>
+  <text x="30" y="58" fill="#5d6f69">Entrada → processamento → memória/armazenamento → saída → comunicação</text>
+
+  <!-- ===================== Dispositivo de borda: Raspberry Pi Pico W ===================== -->
+  <rect x="30" y="80" width="470" height="440" rx="14" fill="#f1f8f4" stroke="#176b50" stroke-width="2"/>
+  <text x="48" y="106" font-size="15" font-weight="700" fill="#176b50">Terminal de atendimento — Raspberry Pi Pico W</text>
+  <text x="48" y="124" fill="#5d6f69">simulado no Wokwi · MicroPython · firmware-pico-w/main.py</text>
+
+  <!-- Entradas -->
+  <rect x="48" y="140" width="130" height="150" rx="10" fill="#fff" stroke="#9cc7b3"/>
+  <text x="62" y="162" font-weight="700" fill="#17342d">ENTRADAS</text>
+  <text x="62" y="184" fill="#17342d">Botão Chegada</text>
+  <text x="62" y="200" fill="#5d6f69" font-size="11">GPIO14 · pull-up · IRQ</text>
+  <text x="62" y="222" fill="#17342d">Botão Concluir</text>
+  <text x="62" y="238" fill="#5d6f69" font-size="11">GPIO15 · pull-up · IRQ</text>
+  <text x="62" y="260" fill="#17342d">Potenciômetro</text>
+  <text x="62" y="276" fill="#5d6f69" font-size="11">GPIO26 · ADC0 12 bits</text>
+
+  <!-- RP2040 -->
+  <rect x="200" y="140" width="150" height="150" rx="10" fill="#176b50"/>
+  <text x="275" y="164" text-anchor="middle" font-weight="700" fill="#fff">CPU — RP2040</text>
+  <text x="275" y="184" text-anchor="middle" fill="#d5e8de" font-size="12">2× ARM Cortex-M0+</text>
+  <text x="275" y="200" text-anchor="middle" fill="#d5e8de" font-size="12">ARMv6-M · 133 MHz</text>
+  <text x="275" y="222" text-anchor="middle" fill="#fff" font-size="12">fila FIFO (buffer circular)</text>
+  <text x="275" y="238" text-anchor="middle" fill="#fff" font-size="12">validação · média</text>
+  <text x="275" y="254" text-anchor="middle" fill="#fff" font-size="12">regressão incremental</text>
+  <text x="275" y="276" text-anchor="middle" fill="#d5e8de" font-size="11">IRQ → flag → laço principal</text>
+
+  <!-- Saídas -->
+  <rect x="372" y="140" width="112" height="150" rx="10" fill="#fff" stroke="#9cc7b3"/>
+  <text x="384" y="162" font-weight="700" fill="#17342d">SAÍDAS</text>
+  <text x="384" y="184" fill="#17342d">OLED 128×64</text>
+  <text x="384" y="200" fill="#5d6f69" font-size="11">SSD1306 · I2C0</text>
+  <text x="384" y="222" fill="#17342d">LED verde/verm.</text>
+  <text x="384" y="238" fill="#5d6f69" font-size="11">GPIO16 / GPIO17</text>
+  <text x="384" y="260" fill="#17342d">Log serial</text>
+  <text x="384" y="276" fill="#5d6f69" font-size="11">USB CDC · CSV</text>
+
+  <line x1="178" y1="215" x2="198" y2="215" stroke="#33413c" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="350" y1="215" x2="370" y2="215" stroke="#33413c" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- Memória Pico -->
+  <rect x="200" y="312" width="150" height="88" rx="10" fill="#fff" stroke="#9cc7b3"/>
+  <text x="275" y="334" text-anchor="middle" font-weight="700" fill="#17342d">RAM — SRAM 264 KB</text>
+  <text x="275" y="352" text-anchor="middle" fill="#5d6f69" font-size="11">fila: 32 × 11 B = 352 B</text>
+  <text x="275" y="368" text-anchor="middle" fill="#5d6f69" font-size="11">framebuffer OLED: 1024 B</text>
+  <text x="275" y="384" text-anchor="middle" fill="#5d6f69" font-size="11">~189 KB livres no heap</text>
+  <line x1="275" y1="290" x2="275" y2="310" stroke="#33413c" stroke-width="2" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+
+  <rect x="48" y="312" width="130" height="88" rx="10" fill="#fff" stroke="#9cc7b3"/>
+  <text x="113" y="334" text-anchor="middle" font-weight="700" fill="#17342d">Flash QSPI 2 MB</text>
+  <text x="113" y="352" text-anchor="middle" fill="#5d6f69" font-size="11">firmware MicroPython</text>
+  <text x="113" y="368" text-anchor="middle" fill="#5d6f69" font-size="11">main.py (XIP + cache)</text>
+  <line x1="178" y1="356" x2="198" y2="356" stroke="#33413c" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <rect x="372" y="312" width="112" height="88" rx="10" fill="#fff" stroke="#c9b7ef" stroke-dasharray="5 4"/>
+  <text x="428" y="334" text-anchor="middle" font-weight="700" fill="#594a88">Wi-Fi CYW43439</text>
+  <text x="428" y="352" text-anchor="middle" fill="#5d6f69" font-size="11">802.11n 2,4 GHz</text>
+  <text x="428" y="368" text-anchor="middle" fill="#5d6f69" font-size="11">ligado ao RP2040</text>
+  <text x="428" y="384" text-anchor="middle" fill="#5d6f69" font-size="11">via SPI (PIO)</text>
+  <line x1="350" y1="356" x2="370" y2="356" stroke="#8a9893" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#arrowGray)"/>
+
+  <text x="48" y="430" fill="#17342d" font-weight="700">Ciclo de uma chegada no Pico W</text>
+  <text x="48" y="450" fill="#5d6f69" font-size="12">1. botão leva GPIO14 a 0 V → interrupção (borda de descida)</text>
+  <text x="48" y="468" fill="#5d6f69" font-size="12">2. ISR filtra repique (200 ms) e marca flag; laço principal processa</text>
+  <text x="48" y="486" fill="#5d6f69" font-size="12">3. CPU grava na fila em SRAM e recalcula estimativas</text>
+  <text x="48" y="504" fill="#5d6f69" font-size="12">4. OLED (I2C), LED (GPIO) e log serial (USB) mostram o resultado</text>
+
+  <!-- ===================== Servidor ===================== -->
+  <rect x="580" y="80" width="490" height="300" rx="14" fill="#f6f5fa" stroke="#594a88" stroke-width="2"/>
+  <text x="598" y="106" font-size="15" font-weight="700" fill="#594a88">Servidor da fila — computador (ou Raspberry Pi 4/5)</text>
+  <text x="598" y="124" fill="#5d6f69">Python 3 · somente biblioteca padrão · app.py</text>
+
+  <rect x="598" y="140" width="140" height="110" rx="10" fill="#594a88"/>
+  <text x="668" y="164" text-anchor="middle" font-weight="700" fill="#fff">CPU</text>
+  <text x="668" y="184" text-anchor="middle" fill="#e6e1f5" font-size="12">x86-64 (protótipo)</text>
+  <text x="668" y="200" text-anchor="middle" fill="#e6e1f5" font-size="12">ou ARM Cortex-A72/A76</text>
+  <text x="668" y="222" text-anchor="middle" fill="#fff" font-size="12">API · regras · IA</text>
+  <text x="668" y="238" text-anchor="middle" fill="#fff" font-size="12">threads por requisição</text>
+
+  <rect x="760" y="140" width="140" height="110" rx="10" fill="#fff" stroke="#c9b7ef"/>
+  <text x="830" y="164" text-anchor="middle" font-weight="700" fill="#17342d">RAM</text>
+  <text x="830" y="184" text-anchor="middle" fill="#5d6f69" font-size="11">fila, eventos (≤250),</text>
+  <text x="830" y="200" text-anchor="middle" fill="#5d6f69" font-size="11">observações (≤500),</text>
+  <text x="830" y="216" text-anchor="middle" fill="#5d6f69" font-size="11">coeficientes a e b</text>
+  <text x="830" y="236" text-anchor="middle" fill="#5d6f69" font-size="11">~75 KiB de dados</text>
+
+  <rect x="920" y="140" width="135" height="110" rx="10" fill="#fff" stroke="#c9b7ef"/>
+  <text x="987" y="164" text-anchor="middle" font-weight="700" fill="#17342d">Armazenamento</text>
+  <text x="987" y="184" text-anchor="middle" fill="#5d6f69" font-size="11">SSD / cartão SD</text>
+  <text x="987" y="204" text-anchor="middle" fill="#5d6f69" font-size="11">estado.json (atômico)</text>
+  <text x="987" y="220" text-anchor="middle" fill="#5d6f69" font-size="11">historico_simulado.csv</text>
+  <text x="987" y="236" text-anchor="middle" fill="#5d6f69" font-size="11">≤ 162 KiB no pior caso</text>
+
+  <line x1="738" y1="195" x2="758" y2="195" stroke="#33413c" stroke-width="2" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+  <line x1="900" y1="195" x2="918" y2="195" stroke="#33413c" stroke-width="2" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+
+  <rect x="598" y="268" width="457" height="96" rx="10" fill="#fff" stroke="#c9b7ef"/>
+  <text x="614" y="290" font-weight="700" fill="#17342d">Interface de comunicação — HTTP/1.1 + JSON sobre TCP/IP (porta 8000)</text>
+  <text x="614" y="310" fill="#5d6f69" font-size="12">POST /api/arrivals · POST /api/completions · POST /api/reset</text>
+  <text x="614" y="328" fill="#5d6f69" font-size="12">GET /api/state (a cada 3 s) · GET /api/events.csv</text>
+  <text x="614" y="346" fill="#5d6f69" font-size="12">Respostas: 200 ok · 400 dado inválido · 404 rota · 409 fila vazia/cheia</text>
+
+  <!-- ===================== Navegador ===================== -->
+  <rect x="580" y="430" width="490" height="170" rx="14" fill="#fff8ec" stroke="#c98a1b" stroke-width="2"/>
+  <text x="598" y="456" font-size="15" font-weight="700" fill="#8a5a00">Navegador — painel web (static/)</text>
+  <text x="598" y="480" fill="#17342d">Entradas virtuais: Registrar chegada · Concluir atendimento · duração</text>
+  <text x="598" y="502" fill="#17342d">Saídas: pessoas na fila · espera estimada · atendimentos concluídos</text>
+  <text x="598" y="524" fill="#17342d">Comparação convencional × IA com erro médio (MAE)</text>
+  <text x="598" y="546" fill="#17342d">Lista da fila e registro de eventos com horário · exportação CSV</text>
+  <text x="598" y="574" fill="#5d6f69" font-size="12">Qualquer dispositivo da rede: FILA_HOST=0.0.0.0 → http://IP-do-servidor:8000</text>
+
+  <line x1="825" y1="428" x2="825" y2="382" stroke="#33413c" stroke-width="2.5" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+  <text x="835" y="410" fill="#17342d" font-size="12" font-weight="700">HTTP + JSON (Wi-Fi / Ethernet / Internet)</text>
+
+  <!-- Ligação Pico -> servidor (planejada) -->
+  <path d="M 500 356 C 540 356, 540 320, 578 320" fill="none" stroke="#8a9893" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#arrowGray)"/>
+  <text x="540" y="392" text-anchor="middle" fill="#7a6aa8" font-size="11">mesma API</text>
+  <text x="540" y="406" text-anchor="middle" fill="#7a6aa8" font-size="11">HTTP POST</text>
+  <text x="540" y="420" text-anchor="middle" fill="#7a6aa8" font-size="11">(placa real)</text>
+
+  <!-- Legenda -->
+  <rect x="30" y="545" width="470" height="125" rx="12" fill="#fafcfb" stroke="#e3eae6"/>
+  <text x="48" y="570" font-weight="700" fill="#17342d">Legenda</text>
+  <line x1="48" y1="590" x2="88" y2="590" stroke="#33413c" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="98" y="594" fill="#5d6f69" font-size="12">fluxo de dados implementado e testado</text>
+  <line x1="48" y1="614" x2="88" y2="614" stroke="#8a9893" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#arrowGray)"/>
+  <text x="98" y="618" fill="#5d6f69" font-size="12">ligação de rede do Pico W prevista na arquitetura; o Wokwi</text>
+  <text x="98" y="634" fill="#5d6f69" font-size="12">público não fornece IP ao Pico W, por isso não foi demonstrada</text>
+  <text x="48" y="658" fill="#5d6f69" font-size="12">Dados iniciais do modelo: SIMULADOS (data/historico_simulado.csv, 60 linhas).</text>
+  <text x="580" y="640" fill="#5d6f69" font-size="12">Mesmas regras nos dois nós: FIFO, sem contagem negativa, duração 0–240 min,</text>
+  <text x="580" y="658" fill="#5d6f69" font-size="12">capacidade fixa e regressão y = a + b·(pessoas × duração média).</text>
+</svg>

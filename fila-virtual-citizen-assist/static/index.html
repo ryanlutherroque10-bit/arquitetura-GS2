@@ -40,7 +40,7 @@
         <article class="metric-card">
           <div class="metric-heading"><span>Atendimentos concluídos</span><span class="metric-icon" aria-hidden="true">✓</span></div>
           <div class="metric-value" id="completed-count">0</div>
-          <div class="metric-foot">desde o início deste protótipo</div>
+          <div class="metric-foot"><span id="rejected-count">0</span> operações inválidas recusadas</div>
         </article>
       </section>
 
@@ -55,7 +55,7 @@
             </label>
             <button class="button button-complete" id="complete-button" type="button"><span aria-hidden="true">✓</span> Concluir atendimento</button>
           </div>
-          <p id="feedback" class="feedback" role="status" aria-live="polite">Os dados são salvos neste computador.</p>
+          <p id="feedback" class="feedback" role="status" aria-live="polite">Os dados são salvos no servidor (data/estado.json).</p>
           <div class="estimate-box">
             <div><span class="estimate-label">Cálculo convencional</span><strong><span id="conventional-wait">0</span> min</strong></div>
             <p>pessoas na fila × duração média de atendimento (<span id="average-service">—</span> min)</p>
@@ -64,10 +64,14 @@
 
         <article class="panel model-panel">
           <div class="panel-title"><div><p class="eyebrow">PREVISÃO</p><h2>Como estimamos</h2></div><span class="model-badge">IA simples</span></div>
-          <div class="model-equation"><span>y = a + b × x</span><small>regressão linear</small></div>
-          <p class="panel-copy">O modelo aprende com registros históricos a relação entre a carga da fila e o tempo de espera observado.</p>
-          <div class="model-facts"><div><span>Base de treinamento</span><strong id="training-points">— registros</strong></div><div><span>Dados iniciais</span><strong>simulados, identificados</strong></div></div>
-          <p class="model-note">A previsão é uma estimativa didática. Durações informadas no atendimento alimentam as próximas estimativas.</p>
+          <div class="model-equation"><span>y = <span id="coef-a">a</span> + <span id="coef-b">b</span> × x</span><small>regressão linear</small></div>
+          <p class="panel-copy">x = pessoas na fila × duração média. O modelo aprende com o histórico a relação entre a carga da fila e a espera observada e corrige o viés da conta convencional.</p>
+          <div class="compare" aria-label="Comparação das estimativas">
+            <div><span>Convencional (média histórica)</span><strong><span id="conventional-wait-2">0</span> min</strong><small>erro médio: <b id="mae-conv">—</b> min</small></div>
+            <div class="compare-ai"><span>IA (regressão linear)</span><strong><span id="ai-wait-2">0</span> min</strong><small>erro médio: <b id="mae-ai">—</b> min</small></div>
+          </div>
+          <div class="model-facts"><div><span>Base de treinamento</span><strong id="training-points">— registros</strong></div><div><span>Composição</span><strong id="training-mix">—</strong></div></div>
+          <p class="model-note">Erro médio absoluto (MAE) calculado por validação cruzada leave-one-out. Os dados iniciais são <strong>simulados</strong> (data/historico_simulado.csv); cada atendimento concluído vira uma nova observação.</p>
         </article>
       </section>
 
@@ -77,7 +81,7 @@
           <div id="queue-list" class="queue-list"><div class="empty-state">A fila está vazia. Registre uma chegada para começar.</div></div>
         </article>
         <article class="panel events-panel">
-          <div class="panel-title"><div><p class="eyebrow">REGISTRO</p><h2>Atividade recente</h2></div></div>
+          <div class="panel-title"><div><p class="eyebrow">REGISTRO</p><h2>Atividade recente</h2></div><div class="panel-links"><a href="/api/events.csv" download>Exportar CSV</a><button type="button" id="reset-button" class="link-button">Reiniciar</button></div></div>
           <div id="event-list" class="event-list"><div class="empty-state">Nenhum evento registrado nesta execução.</div></div>
         </article>
       </section>
