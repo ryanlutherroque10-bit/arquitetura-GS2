@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f4f7f5" />
+    <title>Citizen Assist AI — Fila virtual</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Citizen Assist AI, início">
+        <span class="brand-mark" aria-hidden="true">C</span>
+        <span><strong>Citizen Assist</strong><small>serviços comunitários</small></span>
+      </a>
+      <div class="connection"><span class="pulse"></span><span id="connection-label">Conectando ao sistema…</span></div>
+    </header>
+
+    <main class="page-shell">
+      <section class="intro">
+        <div>
+          <p class="eyebrow">PAINEL DE ATENDIMENTO</p>
+          <h1>Fila virtual</h1>
+          <p class="intro-copy">Acompanhe a espera e registre cada atendimento em um só lugar.</p>
+        </div>
+        <div class="updated">Atualizado <time id="updated-at">—</time></div>
+      </section>
+
+      <section class="metric-grid" aria-label="Resumo da fila">
+        <article class="metric-card metric-primary">
+          <div class="metric-heading"><span>Na fila</span><span class="metric-icon" aria-hidden="true">↗</span></div>
+          <div class="metric-value" id="queue-count">0</div>
+          <div class="metric-foot">pessoas aguardando</div>
+        </article>
+        <article class="metric-card">
+          <div class="metric-heading"><span>Espera estimada</span><span class="metric-icon" aria-hidden="true">◷</span></div>
+          <div class="metric-value"><span id="ai-wait">0</span><small>min</small></div>
+          <div class="metric-foot">previsão por regressão linear</div>
+        </article>
+        <article class="metric-card">
+          <div class="metric-heading"><span>Atendimentos concluídos</span><span class="metric-icon" aria-hidden="true">✓</span></div>
+          <div class="metric-value" id="completed-count">0</div>
+          <div class="metric-foot">desde o início deste protótipo</div>
+        </article>
+      </section>
+
+      <section class="content-grid">
+        <article class="panel actions-panel">
+          <div class="panel-title"><div><p class="eyebrow">OPERAÇÃO</p><h2>Atualizar a fila</h2></div><span class="live-tag">● Ao vivo</span></div>
+          <p class="panel-copy">Registre a chegada ou conclua o atendimento da próxima pessoa.</p>
+          <div class="actions">
+            <button class="button button-arrive" id="arrive-button" type="button"><span aria-hidden="true">＋</span> Registrar chegada</button>
+            <label class="duration-field" for="duration-input">Duração do atendimento (min)
+              <input id="duration-input" type="number" min="0.1" max="240" step="0.5" value="7" />
+            </label>
+            <button class="button button-complete" id="complete-button" type="button"><span aria-hidden="true">✓</span> Concluir atendimento</button>
+          </div>
+          <p id="feedback" class="feedback" role="status" aria-live="polite">Os dados são salvos neste computador.</p>
+          <div class="estimate-box">
+            <div><span class="estimate-label">Cálculo convencional</span><strong><span id="conventional-wait">0</span> min</strong></div>
+            <p>pessoas na fila × duração média de atendimento (<span id="average-service">—</span> min)</p>
+          </div>
+        </article>
+
+        <article class="panel model-panel">
+          <div class="panel-title"><div><p class="eyebrow">PREVISÃO</p><h2>Como estimamos</h2></div><span class="model-badge">IA simples</span></div>
+          <div class="model-equation"><span>y = a + b × x</span><small>regressão linear</small></div>
+          <p class="panel-copy">O modelo aprende com registros históricos a relação entre a carga da fila e o tempo de espera observado.</p>
+          <div class="model-facts"><div><span>Base de treinamento</span><strong id="training-points">— registros</strong></div><div><span>Dados iniciais</span><strong>simulados, identificados</strong></div></div>
+          <p class="model-note">A previsão é uma estimativa didática. Durações informadas no atendimento alimentam as próximas estimativas.</p>
+        </article>
+      </section>
+
+      <section class="content-grid lower-grid">
+        <article class="panel queue-panel">
+          <div class="panel-title"><div><p class="eyebrow">AGUARDANDO</p><h2>Pessoas na fila</h2></div><span class="count-pill" id="queue-pill">0</span></div>
+          <div id="queue-list" class="queue-list"><div class="empty-state">A fila está vazia. Registre uma chegada para começar.</div></div>
+        </article>
+        <article class="panel events-panel">
+          <div class="panel-title"><div><p class="eyebrow">REGISTRO</p><h2>Atividade recente</h2></div></div>
+          <div id="event-list" class="event-list"><div class="empty-state">Nenhum evento registrado nesta execução.</div></div>
+        </article>
+      </section>
+      <footer>Protótipo acadêmico · Os dados simulados estão identificados na documentação.</footer>
+    </main>
+    <script src="/app.js" defer></script>
+  </body>
+</html>
